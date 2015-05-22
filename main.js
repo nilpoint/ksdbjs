@@ -8,6 +8,13 @@ var xmlBodyParser = require('./xmlbodyparser');
 var xmlresponder  = require('./xmlresponder');
 var jsonresponder = require('./jsonresponder');
 
+var passport = require('passport'),
+    mongoose = require('mongoose'),
+    userController = require('./controllers/user'),
+    authController = require('./controllers/auth');
+
+mongoose.connect('mongodb://localhost:27017/ksdbjs');
+
 var appname = 'ksdb';
 var appver  = '0.3.1';
 
@@ -36,6 +43,8 @@ var server = restify.createServer({
     'application/json': jsonresponder()   //customized error handling
   }
 });
+
+server.use(passport.initialize());
 
 server.use(restify.acceptParser(  // do not use embedded parsers
    [ 'application/json',
@@ -66,8 +75,9 @@ if (conf.apimod === 'ct') {
   // customer specific api
   server.get(baseurl + '/download', ksdb.download);
   server.get(baseurl + '/verify',   ksdb.verify);
-  server.get(baseurl + '/create',   ksdb.sign);
+  server.get(baseurl + '/create', authController.isAuthenticated, ksdb.sign);
   server.get(baseurl + '/param', ksdb.param);
+  server.post(baseurl + '/users', userController.postUser);
 
   var dummyhandler = function (req, res, next) {
     res.setHeader('content-type', 'application/xml');
