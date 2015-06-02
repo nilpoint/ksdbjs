@@ -12,10 +12,18 @@ function IpStrategy(verify) {
 util.inherits(IpStrategy, Strategy);
 
 IpStrategy.prototype.authenticate = function (req) {
-  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  var ip = req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+  // ip may include both ipv6 and ipv4 seperated by colon (:)
   if (ip.lastIndexOf(':') > 1) {
     var parts = ip.split(':');
     ip = parts[parts.length - 1];
+  }
+
+  // ip may include multiple IPs seperated by semicolon (,)
+  if (ip.lastIndexOf(',') > 1) {
+    var parts = ip.split(',');
+    ip = parts[parts.length - 1].trim();
   }
 
   var self = this;
