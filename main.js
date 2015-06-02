@@ -11,7 +11,8 @@ var jsonresponder = require('./jsonresponder');
 var passport = require('passport'),
     mongoose = require('mongoose'),
     userController = require('./controllers/user'),
-    authController = require('./controllers/auth');
+    authController = require('./controllers/auth'),
+    ipController = require('./controllers/ip');
 
 mongoose.connect('mongodb://localhost:27017/ksdbjs');
 
@@ -78,6 +79,7 @@ if (conf.apimod === 'ct') {
   server.get(baseurl + '/create', authController.isAuthenticated, ksdb.sign);
   server.get(baseurl + '/param', ksdb.param);
   server.post(baseurl + '/users', userController.postUser);
+  server.post(baseurl + '/ips', ipController.postIp);
 
   var dummyhandler = function (req, res, next) {
     res.setHeader('content-type', 'application/xml');
