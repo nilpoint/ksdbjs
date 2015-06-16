@@ -34,7 +34,7 @@ exports.init = function (conf, logger) {
 };
 
 exports.verify = function (req, res, next) {
-  var hash = req.params.hash;  // needs restify.queryParser plugin 
+  var hash = req.params.hash;  // needs restify.queryParser plugin
   var algorithm = req.query.algorithm || 'sha256';
 
   if (req.header('Accept', '').match(/octet-stream/i))
@@ -87,7 +87,8 @@ exports.download = function (req, res, next) {
           res.set('Content-Disposition', 'attachment; filename=signaturetoken.gtts' );
           res.set('X-GuardTime-at', props.registered_time);
           res.set('X-GuardTime-id', props.location_name);
-          res.send(ts.getContent()); // todo: think about returning extended token
+          res.write(ts.getContent()); // todo: think about returning extended token
+          res.end();
           return next();
         } else {
           res.send({
@@ -224,4 +225,3 @@ exports.param = function (req, res, next) {
     });
   });
 };
-
