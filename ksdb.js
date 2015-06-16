@@ -103,6 +103,7 @@ exports.download = function (req, res, next) {
 };
 
 exports.sign = function (req, res, next) {
+  var username = req.user.username;
   var hash = req.params.hash;
   var algorithm = req.query.algorithm || 'sha256';
 
@@ -164,6 +165,9 @@ exports.sign = function (req, res, next) {
               storeObject[field] = storeObject[field].replace('$', '\uff04').replace('.', '\uff0e');
           }
         }
+
+        // Override ClientName by using username
+        storeObject['ClientName'] = username;
 
         collection.insert(storeObject, {safe:true}, function(err, result) {
           if (err) {
