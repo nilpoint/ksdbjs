@@ -10,6 +10,10 @@ var IpSchema = new mongoose.Schema({
     type: String,
     unique: true,
     required: true
+  },
+  inserted: {
+    type: Date,
+    required: true
   }
 });
 

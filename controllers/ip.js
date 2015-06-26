@@ -4,7 +4,8 @@ var Ip = require('../models/ip');
 exports.postIp = function (req, res) {
   var ip = new Ip({
     address: req.params.address,
-    username: req.params.username
+    username: req.params.username,
+    inserted: new Date()
   });
   ip.save(function (err) {
     if (err) { res.send(err); }
